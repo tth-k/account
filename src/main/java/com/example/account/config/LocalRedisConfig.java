@@ -16,8 +16,14 @@ public class LocalRedisConfig {
 
     @PostConstruct
     public void startRedis() {
-        redisServer = new RedisServer(redisPort);
-        redisServer.start();
+        try {
+            redisServer = RedisServer.builder()
+                    .port(redisPort)
+                    .setting("maxmemory 128M")
+                    .build();
+            redisServer.start();
+        } catch (Exception e){
+        }
     }
 
     @PreDestroy

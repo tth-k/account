@@ -41,7 +41,7 @@ public class AccountService {
         validateCreateAccount(accountUser);
 
         String newAccountNumber = accountRepository.findFirstByOrderByIdDesc()
-                .map(account -> (Integer.parseInt(account.getAccountNumber())) + 1 + "")
+                .map(account -> String.valueOf((Integer.parseInt(account.getAccountNumber())) + 1))
                 .orElse("1000000000");
 
         return AccountDto.fromEntity(
@@ -66,7 +66,8 @@ public class AccountService {
         if (id < 0) {
             throw new RuntimeException("Minus");
         }
-        return accountRepository.findById(id).get();
+        return accountRepository.findById(id)
+                .orElseThrow(() -> new AccountException(ACCOUNT_NOT_FOUND));
     }
 
     @Transactional
